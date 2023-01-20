@@ -1,39 +1,46 @@
-// import React, { useEffect } from "react";
-// import axios from "axios";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import Layout from "../components/Layout";
+import { Row } from "antd";
+import DoctorList from "../components/DoctorList";
 // import { hideLoading, showLoading } from "../redux/features/alertSlice";
 // import { useDispatch } from "react-redux";
 
 const Home = () => {
-//   const dispatch = useDispatch();
+  const [doctors, setDoctors] = useState([]);
+  // const dispatch = useDispatch();
 
-//   const getUserData = async () => {
-//     console.log('home first')
-//     try {
-//       dispatch(showLoading());
-//       await axios.post(
-//         "/api/v1/user/getUserData",
-//         {},
-//         {
-//           headers: {
-//             Authorization: "Bearer " + localStorage.getItem("token"),
-//           },
-//         }
-//       );
-//       dispatch(hideLoading());
-//     } catch (error) {
-//       dispatch(hideLoading());
-//       console.log(error);
-//     }
-//   };
-//   useEffect(() => {
-//     getUserData();
-//   }, []);
+  const getUserData = async () => {
+    try {
+      const res = await axios.get("/api/v1/user/getAllDoctors", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res.data.success) {
+        setDoctors(res.data.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   return (
     <Layout>
-      <div style={{height:'100vh'}}>
-      <h1>Home</h1>
+      <div >
+        <h1 style={{textAlign:'center',padding:'20px'}}>Home</h1>
+        <Row>
+          {
+            doctors && doctors.map(doctor=>(
+              <DoctorList doctor={doctor}/>
+            ))
+          }
+        </Row>
       </div>
     </Layout>
   );
