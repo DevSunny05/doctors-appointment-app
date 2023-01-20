@@ -1,0 +1,16 @@
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.active{
+  background-color: white;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.active a, .active i{
+  color: black !important;
+}
+
