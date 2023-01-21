@@ -3,12 +3,11 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import { Row } from "antd";
 import DoctorList from "../components/DoctorList";
-// import { hideLoading, showLoading } from "../redux/features/alertSlice";
-// import { useDispatch } from "react-redux";
+
 
 const Home = () => {
   const [doctors, setDoctors] = useState([]);
-  // const dispatch = useDispatch();
+ 
 
   const getUserData = async () => {
     try {

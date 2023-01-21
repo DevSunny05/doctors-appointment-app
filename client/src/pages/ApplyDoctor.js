@@ -17,10 +17,10 @@ const ApplyDoctor = () => {
        try {
         dispatch(showLoading())
         const res=await axios.post('/api/v1/user/apply-doctor',{...values,userId:user._id,
-            timing: [
-            moment(values.timing[0]).format("HH:mm"),
-            moment(values.timing[1]).format("HH:mm"),
-          ]},{
+            timings: [
+                moment(values.timings[0]).format("HH:mm"),
+                moment(values.timings[1]).format("HH:mm"),
+              ]},{
             headers:{
                 Authorization:`Bearer ${localStorage.getItem('token')}`
             }
@@ -106,15 +106,14 @@ const ApplyDoctor = () => {
                
            </Col>
            <Col xs={24} md={24} lg={8}>
-               <Form.Item label='Timing' name='timing' required  style={{margin:'10px'}}>
-                   <TimePicker.RangePicker format='HH:mm'/>
-               </Form.Item>
-               
-           </Col>
+            <Form.Item style={{margin:'10px'}} label="Timings" name="timings" required>
+              <TimePicker.RangePicker format="HH:mm" />
+            </Form.Item>
+          </Col>
        </Row>
       
        <div style={{display:'flex',justifyContent:'end',margin:'25px 50px'}}>
-            <button className='btn btn-primary' style={{width:'200px'}}>Submit</button>
+            <button type='submit' className='btn btn-primary' style={{width:'200px'}}>Submit</button>
        </div>
       </Form>
         </div>

@@ -43,7 +43,7 @@ const doctorSchema=mongoose.Schema({
         type:String,
         default:'pending'
     },
-    timing:{
+    timings:{
         type:Object,
         required:[true,'work timing is require']
     },

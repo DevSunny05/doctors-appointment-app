@@ -39,10 +39,14 @@ const Profile = () => {
     const handleFinish=async(values)=>{
         try {
          dispatch(showLoading())
-         const res=await axios.post('/api/v1/doctor/updateProfile',{...values,userId:user._id,timing:[
-            moment(values.timing[0]).format('HH:mm'),
-            moment(values.timing[1]).format('HH:mm')
-         ]},{
+         const res=await axios.post('/api/v1/doctor/updateProfile',{
+            ...values,
+            userId: user._id,
+            timings: [
+              moment(values.timings[0]).format("HH:mm"),
+              moment(values.timings[1]).format("HH:mm"),
+            ],
+          },{
              headers:{
                  Authorization:`Bearer ${localStorage.getItem('token')}`
              }
@@ -67,10 +71,13 @@ const Profile = () => {
             <h1 style={{textAlign:'center'}}>Manage Profile</h1>
             {
                 doctor && (
-                    <Form layout='vertical' onFinish={handleFinish} initialValues={{...doctor,
-                    timing:[moment(doctor.timing[0],'HH:mm'),
-                             moment(doctor.timing[1],'HH:mm')
-                    ]}}>
+                    <Form layout='vertical' onFinish={handleFinish} initialValues={{
+                        ...doctor,
+                        timings: [
+                            moment(doctor.timings[0], "HH:mm"),
+                            moment(doctor.timings[1], "HH:mm"),
+                          ],
+                      }}>
                 <h4 style={{margin:'30px 25px',fontWeight:'400'}}>Personal Details :</h4>
         <Row>
            
@@ -133,15 +140,14 @@ const Profile = () => {
                
            </Col>
            <Col xs={24} md={24} lg={8}>
-               <Form.Item label='Timing' name='timing' required  style={{margin:'10px'}}>
-                   <TimePicker.RangePicker format='HH:mm'/>
-               </Form.Item>
-               
-           </Col>
+              <Form.Item style={{margin:'10px'}} label="Timings" name="timings" required>
+                <TimePicker.RangePicker format="HH:mm" />
+              </Form.Item>
+            </Col>
        </Row>
       
        <div style={{display:'flex',justifyContent:'end',margin:'25px 50px'}}>
-            <button className='btn btn-primary' style={{width:'200px'}}>Update</button>
+            <button type='submit' className='btn btn-primary' style={{width:'200px'}}>Update</button>
        </div>
       </Form>
                 )

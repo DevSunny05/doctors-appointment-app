@@ -1,5 +1,5 @@
 const express=require('express')
-const { getDoctorInfoController, updateProfileController } = require('../controllers/doctor-controller')
+const { getDoctorInfoController, updateProfileController,getSingleDoctorController } = require('../controllers/doctor-controller')
 const authMiddleware = require('../middlewares/authMiddleware')
 
 const router=express.Router()
@@ -10,5 +10,8 @@ router.post('/getDoctorInfo',authMiddleware,getDoctorInfoController)
 
 // post update profile
 router.post('/updateProfile',authMiddleware,updateProfileController)
+
+// get single DOC || POST
+router.post('/getSingleDoctor',authMiddleware,getSingleDoctorController)
 
 module.exports=router

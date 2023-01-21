@@ -38,4 +38,23 @@ const updateProfileController=async(req,res)=>{
     }
 }
 
-module.exports={getDoctorInfoController,updateProfileController}
+// get single doctor
+const getSingleDoctorController=async(req,res)=>{
+    try {
+        const doctor=await doctorModel.findOne({_id:req.body.doctorId})
+        return res.status(200).json({
+            success:true,
+            message:"Data fetch successfully",
+            data:doctor
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(404).json({
+            success:false,
+            message:"Error While feaching Account",
+            error
+        })
+    }
+}
+
+module.exports={getDoctorInfoController,updateProfileController,getSingleDoctorController}
