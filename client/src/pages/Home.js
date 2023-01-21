@@ -4,10 +4,8 @@ import Layout from "../components/Layout";
 import { Row } from "antd";
 import DoctorList from "../components/DoctorList";
 
-
 const Home = () => {
   const [doctors, setDoctors] = useState([]);
- 
 
   const getUserData = async () => {
     try {
@@ -31,14 +29,10 @@ const Home = () => {
 
   return (
     <Layout>
-      <div >
-        <h1 style={{textAlign:'center',padding:'20px'}}>Home</h1>
+      <div>
+        <h1 style={{ textAlign: "center", padding: "20px" }}>Home</h1>
         <Row>
-          {
-            doctors && doctors.map(doctor=>(
-              <DoctorList doctor={doctor}/>
-            ))
-          }
+          {doctors && doctors.map((doctor) => <DoctorList doctor={doctor} />)}
         </Row>
       </div>
     </Layout>
