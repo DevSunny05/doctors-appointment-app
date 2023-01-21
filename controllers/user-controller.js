@@ -1,5 +1,6 @@
 const userModel=require('../models/user-model')
 const doctorModel=require('../models/doctor-model')
+const appointmentModel=require('../models/appointment-model')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
 
@@ -166,4 +167,32 @@ const getAllDoctorsController=async(req,res)=>{
     }
 }
 
-module.exports={loginController,registerController,authController,applyDoctorController,getAllNotificationController,deleteAllNotificationController,getAllDoctorsController}
+// book appointment
+const bookAppointmentController=async(req,res)=>{
+    try {
+        req.body.status='pending'
+        const newAppointment=new appointmentModel(req.body)
+        await newAppointment.save()
+        const user=await userModel.findOne({_id:req.body.doctorInfo.userId})
+        user.notification.push({
+            type:'New-appointment-request',
+            message:`A new appointment request from ${req.body.userInfo.name}`,
+            onClickPath:'/user/appointments',
+        })
+        await user.save()
+        return res.status(200).json({
+            success:true,
+            message:"Appointment Book successfuly",
+            
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(404).json({
+            success:false,
+            message:'Error While booking appointment',
+            error
+        })
+    }
+}
+
+module.exports={loginController,registerController,authController,applyDoctorController,getAllNotificationController,deleteAllNotificationController,getAllDoctorsController,bookAppointmentController}

@@ -1,15 +1,19 @@
-import { DatePicker, TimePicker } from "antd";
+import { DatePicker, message, TimePicker } from "antd";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "../components/Layout";
-import { moment } from "moment";
+import  moment  from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../redux/features/alertSlice";
 
 const Booking = () => {
   const [doctors, setDoctors] = useState([]);
+  const {user}=useSelector(state=>state.user)
   const params = useParams();
+  const dispatch=useDispatch()
   const [date, setDate] = useState("");
-  const [timing, setTiming] = useState();
+  const [time, setTime] = useState();
   const [isAvailable, setIsAvailable] = useState(false);
 
   const getDoctorData = async () => {
@@ -31,6 +35,32 @@ const Booking = () => {
       console.log(error);
     }
   };
+
+  // handle booking 
+  const handleBooking=async()=>{
+    try {
+      dispatch(showLoading())
+      const res=await axios.post('/api/v1/user/book-appointment',{
+        doctorId:params.doctorId,
+        userId:user._id,
+        doctorInfo:doctors,
+        userInfo:user,
+        date:date,
+        time:time
+      },{
+        headers:{
+          Authorization:`Bearer ${localStorage.getItem('token')}`
+      }
+      })
+      dispatch(hideLoading())
+      if(res.data.success){
+        message.success(res.data.message)
+      }
+    } catch (error) {
+      dispatch(hideLoading())
+      console.log(error)
+    }
+  }
 
   useEffect(() => {
     getDoctorData();
@@ -59,22 +89,23 @@ const Booking = () => {
                 }}
               >
                 <DatePicker
-                  format="DD_MM_YYYY"
+                  format="DD-MM-YYYY"
                   onChange={(value) =>
-                    setDate(moment(value).format("DD_MM_YYYY"))
+                    setDate(moment(value).format("DD-MM-YYYY"))
                   }
                 />
-                <TimePicker.RangePicker
+                <TimePicker
                   format="HH:mm"
-                  onChange={(values) =>
-                    setTiming([
-                      moment(values[0]).format("HH:mm"),
-                      moment(values[1]).format("HH:mm"),
-                    ])
+                  onChange={(value) =>
+                    setTime(moment(value).format('HH:mm'))
                   }
                 />
-                <button style={{width:'200px',margin:'20px 0'}} className="btn btn-primary mt-2">
+                <button style={{width:'200px',margin:'5px 0'}} className="btn btn-primary mt-2">
                   Check Availability
+                </button>
+
+                <button style={{width:'200px',margin:'5px 0'}} className="btn btn-dark mt-2" onClick={handleBooking}>
+                  Book Now
                 </button>
               </div>
             </div>
