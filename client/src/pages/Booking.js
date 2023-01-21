@@ -13,7 +13,7 @@ const Booking = () => {
   const params = useParams();
   const dispatch=useDispatch()
   const [date, setDate] = useState("");
-  const [time, setTime] = useState();
+  const [time, setTime] = useState("");
   const [isAvailable, setIsAvailable] = useState(false);
 
   const getDoctorData = async () => {
@@ -52,6 +52,7 @@ const Booking = () => {
           Authorization:`Bearer ${localStorage.getItem('token')}`
       }
       })
+      console.log(time)
       dispatch(hideLoading())
       if(res.data.success){
         message.success(res.data.message)
@@ -89,15 +90,17 @@ const Booking = () => {
                 }}
               >
                 <DatePicker
+                aria-required={"true"}
                   format="DD-MM-YYYY"
                   onChange={(value) =>
                     setDate(moment(value).format("DD-MM-YYYY"))
                   }
                 />
                 <TimePicker
+                 aria-required={"true"}
                   format="HH:mm"
                   onChange={(value) =>
-                    setTime(moment(value).format('HH:mm'))
+                    setTime(value.format("HH:mm"))
                   }
                 />
                 <button style={{width:'200px',margin:'5px 0'}} className="btn btn-primary mt-2">

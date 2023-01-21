@@ -18,13 +18,14 @@ const ApplyDoctor = () => {
         dispatch(showLoading())
         const res=await axios.post('/api/v1/user/apply-doctor',{...values,userId:user._id,
             timings: [
-                moment(values.timings[0]).format("HH:mm"),
-                moment(values.timings[1]).format("HH:mm"),
+                values.timings[0].format("HH:mm"),
+                values.timings[1].format("HH:mm"),
               ]},{
             headers:{
                 Authorization:`Bearer ${localStorage.getItem('token')}`
             }
         })
+       
         dispatch(hideLoading())
         if(res.data.success){
             navigate('/')
