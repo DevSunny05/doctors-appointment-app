@@ -235,4 +235,23 @@ const bookingAvailabilityController=async(req,res)=>{
     }
 }
 
-module.exports={loginController,registerController,authController,applyDoctorController,getAllNotificationController,deleteAllNotificationController,getAllDoctorsController,bookAppointmentController,bookingAvailabilityController}
+// user appointment list
+const userAppointmentController=async(req,res)=>{
+    try {
+        const appointments=await appointmentModel.find({userId:req.body.userId})
+        return res.status(200).json({
+            success:true,
+            message:'Data successfully fetch',
+            data:appointments
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(404).json({
+            success:false,
+            message:"Error while fetching data",
+            error
+        })
+    }
+}
+
+module.exports={loginController,registerController,authController,applyDoctorController,getAllNotificationController,deleteAllNotificationController,getAllDoctorsController,bookAppointmentController,bookingAvailabilityController,userAppointmentController}

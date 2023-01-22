@@ -55,12 +55,12 @@ const Layout = ({children}) => {
                         SideMenu.map((menu)=>{
                             const isActive=location.pathname ===menu.path
                             return (
-                                <>
+                                
                                 <div key={menu.id} className={`menu-item ${isActive && 'active'} `} style={{margin:'30px 10px'}}>
                                     <i style={{color:'white',fontSize:'20px'}} className={menu.icon}></i>
                                     <Link style={{color:'white',textDecoration:'none',marginLeft:'15px',fontSize:'20px'}} to={menu.path}>{menu.name}</Link>
                                 </div>
-                                </>
+                               
                             )
                         })
                     }

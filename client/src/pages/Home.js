@@ -32,7 +32,7 @@ const Home = () => {
       <div>
         <h1 style={{ textAlign: "center", padding: "20px" }}>Home</h1>
         <Row>
-          {doctors && doctors.map((doctor) => <DoctorList doctor={doctor} />)}
+          {doctors && doctors.map((doctor) => <DoctorList key={doctor._id} doctor={doctor} />)}
         </Row>
       </div>
     </Layout>
