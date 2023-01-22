@@ -3,6 +3,7 @@ const doctorModel=require('../models/doctor-model')
 const appointmentModel=require('../models/appointment-model')
 const bcrypt=require('bcryptjs')
 const jwt=require('jsonwebtoken')
+const moment =require('moment')
 
 
 // login callback
@@ -171,6 +172,8 @@ const getAllDoctorsController=async(req,res)=>{
 const bookAppointmentController=async(req,res)=>{
     try {
         req.body.status='pending'
+        req.body.date= moment(req.body.date,'DD-MM-YYYY').toISOString()
+        req.body.time=moment(req.body.time,'HH:mm').toISOString()
         const newAppointment=new appointmentModel(req.body)
         await newAppointment.save()
         const user=await userModel.findOne({_id:req.body.doctorInfo.userId})
@@ -195,4 +198,41 @@ const bookAppointmentController=async(req,res)=>{
     }
 }
 
-module.exports={loginController,registerController,authController,applyDoctorController,getAllNotificationController,deleteAllNotificationController,getAllDoctorsController,bookAppointmentController}
+// booking avalibity
+const bookingAvailabilityController=async(req,res)=>{
+    try {
+        const date=moment(req.body.date,'DD-MM-YYYY').toISOString()
+        const fromTime=moment(req.body.time,'HH:mm').subtract(1,'hours').toISOString()
+        const toTime=moment(req.body.time,'HH:mm').add(1,'hours').toISOString()
+        const doctorId=req.body.doctorId
+        const appointments=await appointmentModel.find({
+            doctorId,
+            date,
+            time:{
+                $gte:fromTime,
+                $lte:toTime
+            }
+        })
+        
+        if(appointments.length>0){
+            return res.status(200).json({
+                success:false,
+                message:'Appointment not available at this point'
+            })
+        }else{
+            return res.status(200).json({
+                success:true,
+                message:'Appointment Available'
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(404).json({
+            success:false,
+            message:"Error while booking",
+            error
+        })
+    }
+}
+
+module.exports={loginController,registerController,authController,applyDoctorController,getAllNotificationController,deleteAllNotificationController,getAllDoctorsController,bookAppointmentController,bookingAvailabilityController}

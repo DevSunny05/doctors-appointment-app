@@ -3,7 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Layout from "../components/Layout";
-import  moment  from "moment";
+// import  moment  from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoading, showLoading } from "../redux/features/alertSlice";
 
@@ -14,7 +14,7 @@ const Booking = () => {
   const dispatch=useDispatch()
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [isAvailable, setIsAvailable] = useState(false);
+  // const [isAvailable, setIsAvailable] = useState(false);
 
   const getDoctorData = async () => {
     try {
@@ -39,6 +39,10 @@ const Booking = () => {
   // handle booking 
   const handleBooking=async()=>{
     try {
+      
+      if(!date && !time){
+        return alert("Date and Time is required")
+      }
       dispatch(showLoading())
       const res=await axios.post('/api/v1/user/book-appointment',{
         doctorId:params.doctorId,
@@ -56,6 +60,35 @@ const Booking = () => {
       dispatch(hideLoading())
       if(res.data.success){
         message.success(res.data.message)
+      }
+    } catch (error) {
+      dispatch(hideLoading())
+      console.log(error)
+    }
+  }
+
+  // handle availability
+  const handleAvailability=async()=>{
+    try {
+      if(!date && !time){
+        return alert("Date and Time is required")
+      }
+      dispatch(showLoading())
+      const res=await axios.post('/api/v1/user/booking-availbity',
+      {doctorId:params.doctorId,date,time},
+      {
+        headers:{
+          Authorization:`Bearer ${localStorage.getItem('token')}`
+      }
+      }
+      )
+      dispatch(hideLoading())
+      if(res.data.success){
+      
+        message.success(res.data.message)
+      }else{
+   
+        message.error(res.data.message)
       }
     } catch (error) {
       dispatch(hideLoading())
@@ -92,24 +125,29 @@ const Booking = () => {
                 <DatePicker
                 aria-required={"true"}
                   format="DD-MM-YYYY"
-                  onChange={(value) =>
-                    setDate(moment(value).format("DD-MM-YYYY"))
+                  onChange={(value) =>{
+                    setDate(value.format("DD-MM-YYYY"))
+                  }
                   }
                 />
                 <TimePicker
                  aria-required={"true"}
                   format="HH:mm"
-                  onChange={(value) =>
+                  onChange={(value) =>{
                     setTime(value.format("HH:mm"))
                   }
+                  }
                 />
-                <button style={{width:'200px',margin:'5px 0'}} className="btn btn-primary mt-2">
+                <button style={{width:'200px',margin:'5px 0'}} className="btn btn-primary mt-2" onClick={handleAvailability}>
                   Check Availability
                 </button>
-
+ 
+             
                 <button style={{width:'200px',margin:'5px 0'}} className="btn btn-dark mt-2" onClick={handleBooking}>
-                  Book Now
+                Book Now
                 </button>
+               
+                
               </div>
             </div>
           )}
